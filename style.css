@@ -1,0 +1,70 @@
+	.paper{
+		position: absolute;
+		top:0px;
+		left:0px;
+		background-color: powderblue;
+		z-index:-99;
+	}
+	.paperImg{
+		position:absolute;
+		left:200px;Img
+		top:0px;
+		height: 600px;
+		width: 800px;
+		content:url(paper.jpg);
+	}
+	.header{
+		margin-top:70px;
+		margin-left:300px;
+		height:55px;
+	}
+	body{
+		font-family: Lucinda, Courier New;
+		font-size:24px;
+	}
+	div.leftSide {
+		width:150px;
+		#background-color:lightblue;
+		float:left;
+		display:inline-flex;
+		justify-content: flex-end;
+	}
+	div.equals{
+		width:30px;
+		#background-color:yellow;
+		float:left;
+		text-align:center;
+	}
+	div.rightSide {
+		width:300px;
+		#background-color:pink;
+		float:left;
+		display:inline-flex;
+		justify-content: flex-start;
+	}
+	div.coefficient {
+		user-select: none;
+	}
+	div.coefficientDrag {
+		position:absolute;
+		top:-400;
+	}
+	div.constant {
+		user-select: none;
+	}
+	div.constantDrag {
+		position:absolute;
+		top:-300;
+	}
+	div.variable {
+		user-select: none;
+	}
+	div.description {
+		float:left;
+		font-size:18px;
+		text-align:left;
+		width:450px;
+	}
+	div.linediv{
+		height:60px;
+	}

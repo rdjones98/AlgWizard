@@ -1,0 +1,42 @@
+<html>
+<link rel="stylesheet" href="style.css">
+<script src="script.js"></script>
+<script>
+
+	// --------------------------
+	// Start Code for actual case
+	// --------------------------
+	function start()
+	{
+
+		daWizard = new Wizard(0);
+		daWizard.addStep(	new Description("Step 1:  Undo any multiplication"),
+							new Coefficient("LEFTSIDE", 2,"black","1/2","red"), 
+							new Variable   ("LEFTSIDE"),
+							new EqualSign  (),
+							new Constant   ("RIGHTSIDE", "5", "black"));
+		daWizard.addResult(	new Description("SIMPLIFY"),
+							new Variable   ("LEFTSIDE"), 
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "<font color='red'>1/2</font>(5)", "black", "yellow"));
+		daWizard.addStep(	new Description("FINISHED"),
+							new Variable   ("LEFTSIDE"), 
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "5/2 or 2.5", "black","yellow"));
+		daWizard.start();
+	}
+
+
+	function allowDrop(ev) {
+	  ev.preventDefault();
+	}
+</script>
+<body onload="start();" ondragover="allowDrop(event)">
+	<div class="header">Solving for X: <font color=red>a</font>x=b</div>
+	<div id=thePage class="paper" >
+		<img class="paperImg">
+		</img>
+	</div>
+
+</body>
+</html>

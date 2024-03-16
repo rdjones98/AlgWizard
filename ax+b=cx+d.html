@@ -1,0 +1,65 @@
+<html>
+<link rel="stylesheet" href="style.css">
+<script src="script.js"></script>
+<script>
+
+	// --------------------------
+	// Start Code for actual case
+	// --------------------------
+	function start()
+	{
+
+		daWizard = new Wizard(0);
+		daWizard.addStep(	new Description("Step 1: Move 'x' term left"),
+							new Coefficient("LEFTSIDE", 3,"black"), 
+							new Variable   ("LEFTSIDE"),
+							new Constant   ("LEFTSIDE", "+2", "black"),
+							new EqualSign  (),
+							new Coefficient("RIGHTSIDE", "5x", "black", "-5x", "red"),
+							new Constant   ("RIGHTSIDE", "+3", "black"));
+		daWizard.addResult(	new Description("COMBINE"),
+							new Constant   ("LEFTSIDE", "3x","black","yellow"), 
+							new Constant   ("LEFTSIDE", "+2", "black"),
+							new Constant   ("LEFTSIDE", "-5x", "red","yellow"),
+							new EqualSign  (),
+							new Constant   ("RIGHTSIDE", "3", "black"));
+		daWizard.addStep(	new Description("Step 2: Move constants to the right"),
+							new Constant   ("LEFTSIDE", "-2x","black","yellow"), 
+							new Constant   ("LEFTSIDE", "+2", "black", null, "-2","red"),
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "3", "black"));
+		daWizard.addResult(	new Description("SIMPLIFY"),
+							new Constant   ("LEFTSIDE", "-2", "black", null, "-1/2","red"),
+							new Variable   ("LEFTSIDE"), 
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "3<font color='red'>-2</font>", "black","yellow"));
+		daWizard.addStep(	new Description("Step 3:  Undo any multiplication"),
+							new Constant   ("LEFTSIDE", "-2", "black",null, "-1/2","red"),
+							new Variable   ("LEFTSIDE"), 
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "1", "black","yellow"));
+		daWizard.addResult(	new Description("SIMPLIFY"),
+							new Variable   ("LEFTSIDE"), 
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "<font color=red>-1/2</font>(1)", "black","yellow"));
+		daWizard.addStep(	new Description("FINISHED"),
+							new Variable   ("LEFTSIDE"), 
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "-1/2 or -0.5", "black","yellow"));
+		daWizard.start();
+	}
+
+
+	function allowDrop(ev) {
+	  ev.preventDefault();
+	}
+</script>
+<body onload="start();" ondragover="allowDrop(event)">
+	<div class="header">Solving for X: <font color=red>a</font>x+<font color="blue">b</font>=<font color=red>c</font>x+<font color="blue">d</font></div>
+	<div id=thePage class="paper" >
+		<img class="paperImg">
+		</img>
+	</div>
+
+</body>
+</html>

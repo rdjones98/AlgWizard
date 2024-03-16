@@ -1,0 +1,52 @@
+<html>
+<link rel="stylesheet" href="style.css">
+<script src="script.js"></script>
+<script>
+
+	// --------------------------
+	// Start Code for actual case
+	// --------------------------
+	function start()
+	{
+
+		daWizard = new Wizard(0);
+		daWizard.addStep(	new Description("Step 1: Distribute"),
+							new Coefficient("LEFTSIDE", 2,"black",2,"red"), 
+							new Constant   ("LEFTSIDE", "(3x+4)", "black"),
+							new EqualSign  (),
+							new Constant   ("RIGHTSIDE", "5", "black"));
+		daWizard.addResult(	new Description("COMBINE"),
+							new Coefficient("LEFTSIDE", 2,"black"), 
+							new Variable   ("LEFTSIDE"), 
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "5+<font color='red'>-3</font>", "black","yellow"));
+		daWizard.addStep(	new Description("Step 2: Undo any multiplication"),
+							new Coefficient("LEFTSIDE", 2,"black","1/2","red"), 
+							new Variable   ("LEFTSIDE"), 
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "2", "black","yellow"));
+		daWizard.addResult(	new Description("SIMPLIFY"),
+							new Variable   ("LEFTSIDE"), 
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "<font color='red'>1/2</font>(2)", "black", "yellow"));
+		daWizard.addStep(	new Description("FINISHED"),
+							new Variable   ("LEFTSIDE"), 
+							new EqualSign(),
+							new Constant   ("RIGHTSIDE", "1", "black","yellow"));
+		daWizard.start();
+	}
+
+
+	function allowDrop(ev) {
+	  ev.preventDefault();
+	}
+</script>
+<body onload="start();" ondragover="allowDrop(event)">
+	<div class="header">Solving for X: <font color=red>a</font>(bx+c)=d</div>
+	<div id=thePage class="paper" >
+		<img class="paperImg">
+		</img>
+	</div>
+
+</body>
+</html>

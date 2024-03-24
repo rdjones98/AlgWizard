@@ -11,41 +11,42 @@
 
 		daWizard = new Wizard(0);
 		daWizard.addStep(	new Description("Step 1: Move 'x' term left"),
-							new Coefficient("LEFTSIDE", 3,"black"), 
-							new Variable   ("LEFTSIDE"),
-							new Constant   ("LEFTSIDE", "+2", "black"),
+							new Text       ("LEFTSIDE", "3x+2","black","transparent",true), 
 							new EqualSign  (),
-							new Coefficient("RIGHTSIDE", "5x", "black", "-5x", "red"),
-							new Constant   ("RIGHTSIDE", "+3", "black"));
+							new Draggable  ("RIGHTSIDE", "5x", "black", "-5x", "red"),
+							new Text       ("RIGHTSIDE", "+3", "black"));
 		daWizard.addResult(	new Description("COMBINE"),
-							new Constant   ("LEFTSIDE", "3x","black","yellow"), 
-							new Constant   ("LEFTSIDE", "+2", "black"),
-							new Constant   ("LEFTSIDE", "-5x", "red","yellow"),
+							new Text       ("LEFTSIDE", "3x","black","yellow"), 
+							new Text       ("LEFTSIDE", "-5x", "red","yellow"),
+							new Text       ("LEFTSIDE", "+2", "black"),
 							new EqualSign  (),
-							new Constant   ("RIGHTSIDE", "3", "black"));
+							new Text       ("RIGHTSIDE", "3", "black"),
+							new Prompt     (510,220,"-2x"));
 		daWizard.addStep(	new Description("Step 2: Move constants to the right"),
-							new Constant   ("LEFTSIDE", "-2x","black","yellow"), 
-							new Constant   ("LEFTSIDE", "+2", "black", null, "-2","red"),
+							new Text       ("LEFTSIDE", "-2x","black","yellow"), 
+							new Draggable  ("LEFTSIDE", "+2", "black", "-2","red"),
 							new EqualSign(),
-							new Constant   ("RIGHTSIDE", "3", "black"));
+							new Text       ("RIGHTSIDE", "3", "black","transparent", true));
 		daWizard.addResult(	new Description("SIMPLIFY"),
-							new Constant   ("LEFTSIDE", "-2", "black", null, "-1/2","red"),
+							new Text       ("LEFTSIDE", "-2", "black"),
 							new Variable   ("LEFTSIDE"), 
 							new EqualSign(),
-							new Constant   ("RIGHTSIDE", "3<font color='red'>-2</font>", "black","yellow"));
+							new Text       ("RIGHTSIDE", "3<font color='red'>-2</font>", "black","yellow"),
+							new Prompt     (640,340,1));
 		daWizard.addStep(	new Description("Step 3:  Undo any multiplication"),
-							new Constant   ("LEFTSIDE", "-2", "black",null, "-1/2","red"),
+							new Draggable  ("LEFTSIDE", "-2", "black", "-1/2","red"),
 							new Variable   ("LEFTSIDE"), 
 							new EqualSign(),
-							new Constant   ("RIGHTSIDE", "1", "black","yellow"));
+							new Text       ("RIGHTSIDE", "1", "black","yellow",true));
 		daWizard.addResult(	new Description("SIMPLIFY"),
 							new Variable   ("LEFTSIDE"), 
 							new EqualSign(),
-							new Constant   ("RIGHTSIDE", "<font color=red>-1/2</font>(1)", "black","yellow"));
+							new Text       ("RIGHTSIDE", "<font color=red>-1/2</font>(1)", "black","yellow"),
+							new Prompt     (640,480,"-1/2","-.5"));
 		daWizard.addStep(	new Description("FINISHED"),
 							new Variable   ("LEFTSIDE"), 
 							new EqualSign(),
-							new Constant   ("RIGHTSIDE", "-1/2 or -0.5", "black","yellow"));
+							new Text       ("RIGHTSIDE", "-1/2 or -.5", "black","yellow"));
 		daWizard.start();
 	}
 
@@ -60,6 +61,10 @@
 		<img class="paperImg">
 		</img>
 	</div>
-
+	<div id=theWork></div>
+	<div id=theDialog class="dialog">
+		<input id=theDialogTF size=4></input>
+		<button id="theDialogButton">OK</button>
+	</div>
 </body>
 </html>

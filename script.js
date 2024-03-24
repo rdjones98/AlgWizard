@@ -1,6 +1,6 @@
-	class Coefficient 
+	class Draggable 
 	{
-		constructor(aDivName,aVal,aTextColor, aDragVal,aDragColor)
+		constructor(aDivName,aVal,aTextColor, aDragVal,aDragColor,aBackColor)
 		{
 			this.id      = "coef";
 			this.divName = aDivName;
@@ -8,7 +8,7 @@
 			this.textColor = aTextColor;
 			this.dragValue = aDragVal;
 			this.dragColor = aDragColor;
-			
+			this.backColor = aBackColor;
 		}
 		addToDiv(step)
 		{
@@ -18,27 +18,67 @@
 			var coeffDiv = document.createElement("div");	
 			coeffDiv.id			= this.id;
 			coeffDiv.className	= "coefficient";
-			if( this.dragValue != null )
-				coeffDiv.draggable=true;
+			coeffDiv.draggable=true;
+			if(this.backColor!=null)
+				coeffDiv.style.backgroundColor=this.backColor;
 			coeffDiv.appendChild(document.createTextNode(this.val));
 
-			if( this.dragValue != null )
-			{
-				var coeffDragDiv = document.createElement("div");	
-				coeffDragDiv.id			= this.id + "drag";
-				coeffDragDiv.className	= "coefficientDrag"
-				coeffDragDiv.draggable	= true;
-				coeffDragDiv.appendChild(document.createTextNode(this.dragValue));
-				coeffDragDiv.style.color=this.dragColor
-			}
+			var coeffDragDiv = document.createElement("div");	
+			coeffDragDiv.id			= this.id + "drag";
+			coeffDragDiv.className	= "coefficientDrag"
+			coeffDragDiv.draggable	= true;
+			coeffDragDiv.appendChild(document.createTextNode(this.dragValue));
+			coeffDragDiv.style.color=this.dragColor
 			
 			var obj = document.getElementById(this.divName);
 			obj.appendChild(coeffDiv);
-			if( coeffDragDiv != null )
-				obj.appendChild(coeffDragDiv);
+			obj.appendChild(coeffDragDiv);
 		}
 		toString() {
 			return this.val;
+		}
+	}
+	class Prompt
+	{
+		constructor(x,y,aVal, aVal2)
+		{
+			this.x   = x;
+			this.y   = y;
+			this.val = aVal;
+			this.val2 = aVal2;
+			this.used = false;
+		}
+		addToDiv(step, aWizard)
+		{
+			this.theWizard = aWizard;
+
+			let theButton = document.getElementById("theDialogButton");
+			theButton.removeEventListener("click", this.okPressed);
+			theButton.addEventListener("click",this.okPressed);
+
+			let theDialog = document.getElementById("theDialog");
+			theDialog.style.left = this.x + "px";
+			theDialog.style.top  = this.y + "px";
+		}
+		okPressed = (ev) => {
+			if( this.used == true )
+				return;
+			
+			let theDialogTF = document.getElementById("theDialogTF");
+			
+			if( theDialogTF.value != this.val && theDialogTF.value != this.val2 )
+			{
+				alert("Simplify the expression in yellow");
+				return;
+			}
+			theDialogTF.value="";
+			
+			let theDialog = document.getElementById("theDialog");
+			theDialog.style.left = "0px";
+			theDialog.style.top  = "-100px";
+			
+			this.theWizard.handleDrop();
+			this.used = true;
 		}
 	}
 	class Variable
@@ -80,7 +120,6 @@
 			this.SIMPLIFY = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simplify!";
 			this.COMBINE  = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Combine Like Terms!";
 
-
 			this.id      = "desc";
 			this.divName = "DESCRIPTION";
 			if(aVal == "FINISHED")
@@ -105,20 +144,18 @@
 		}
 
 	}
-	class Constant
+	class Text
 	{
-		constructor(aDivName,aVal,aTextColor, aBackColor, aDragVal,aDragColor)
+		constructor(aDivName,aVal,aTextColor, aBackColor, aDragTarget)
 		{
 			this.id      = "const";
 			this.divName = aDivName;
 			this.val 	 = aVal;
 			this.textColor = aTextColor;
 			this.backColor = aBackColor;
-			this.dragValue = aDragVal;
-			this.dragColor = aDragColor;
-			
+			this.dragTarget = aDragTarget;
 		}
-		addToDiv(step)
+		addToDiv(step, theWizard)
 		{
 			this.id      = step + this.id;
 			this.divName = step + this.divName;
@@ -128,28 +165,16 @@
 			constDiv.className	= "constant";
 			constDiv.style.color=this.textColor;
 			
+			if( this.dragTarget == true )
+				constDiv.addEventListener("drop", theWizard.handleDrop);
 			if( this.backColor != null)
 				constDiv.style.backgroundColor =this.backColor;
 			
-			if( this.dragValue != null)
-				constDiv.draggable=true;
-//			constDiv.appendChild(document.createTextNode(aVal));
 			constDiv.innerHTML += this.val;
 
-			if( this.dragValue != null )
-			{
-				var constDragDiv = document.createElement("div");	
-				constDragDiv.id=this.id+"drag";
-				constDragDiv.className="constantDrag"
-				constDragDiv.draggable=true;
-				constDragDiv.appendChild(document.createTextNode(this.dragValue));
-				constDragDiv.style.color=this.dragColor;
-			}
-			
+
 			var obj = document.getElementById(this.divName);
 			obj.appendChild(constDiv);
-			if(this.dragValue!=null)
-				obj.appendChild(constDragDiv);
 		}
 		toString() {
 			return this.val;
@@ -179,7 +204,7 @@
 			this.addRow(0);
 			var zero = this.steps[0];
 			zero.forEach(item => {
-				item.addToDiv(0);
+				item.addToDiv(0, this);
 			});
 			this.step++;	
 		}
@@ -189,15 +214,9 @@
 			this.addRow(this.step);
 			var items = this.steps[this.step];
 			items.forEach(item => {
-				item.addToDiv(this.step);
+				item.addToDiv(this.step, this);
 			});
 
-			this.step++;
-			this.addRow(this.step);
-			var items = this.steps[this.step];
-			items.forEach(item => {
-				item.addToDiv(this.step);
-			});
 			this.step++;
 		}
 
@@ -209,6 +228,7 @@
 				args.push(arguments[i]);
 			this.steps.push(args);
 		}
+
 		// same as addStep, I just couldn't figure out how to pass the argument list into addStep and delegate
 		addResult()
 		{
@@ -221,39 +241,33 @@
 		addRow(aRow)
 		{
 			// Construct the left side,equals sign and right side
-//			document.body.innerHTML += '<div class="description">Step 6: Undo any multiplication or division</div>';
 			var lineDiv = document.createElement("div");
 			lineDiv.className = "linediv";
 			
 			var descDiv = document.createElement("div");
 			descDiv.id 			= aRow + "DESCRIPTION";
 			descDiv.className 	= "description";
-			//document.body.appendChild(descDiv);
 			lineDiv.appendChild(descDiv);
 			
 			var lsDiv = document.createElement("div");	
 			lsDiv.id		= aRow + "LEFTSIDE";
 			lsDiv.className	= "leftSide";
-			//document.body.appendChild(lsDiv);
 			lsDiv.addEventListener("dragover",function(e) {e.preventDefault(); });
-			lsDiv.addEventListener("drop",    this.handleDrop);
 			lineDiv.appendChild(lsDiv);
 			
 			var equalsDiv = document.createElement("div");
 			equalsDiv.className="equals";
 			equalsDiv.appendChild(document.createTextNode("="));
-			//document.body.appendChild(equalsDiv);
 			lineDiv.appendChild(equalsDiv);
 			
 			var rsDiv = document.createElement("div");	
 			rsDiv.id		= aRow + "RIGHTSIDE";
 			rsDiv.className	= "rightSide";
 			rsDiv.addEventListener("dragover",function(e) {e.preventDefault(); });
-			rsDiv.addEventListener("drop",    this.handleDrop);
-			//document.body.appendChild(rsDiv);
 			lineDiv.appendChild(rsDiv);
 
-			document.body.appendChild(lineDiv);
+			let pageDiv = document.getElementById("theWork");
+			pageDiv.appendChild(lineDiv);
 		}
 	}
 	// ---------------------
